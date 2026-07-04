@@ -76,15 +76,10 @@ running them:
 - **Internet access is required.** Every script pulls historical price data
   live from Yahoo Finance through `yfinance`; results depend on that data
   still being available and unchanged.
-- **Some scripts open plot windows and wait.** `05`, `08`, and `09` call
-  `plt.show()`, which blocks until you close the figure window. Run them in
-  an environment with a display, or comment out `plt.show()` for a
-  fully non-interactive/headless run.
-- **`sqp_solver.py` runs on import, not just on call.** It's the original
-  standalone script kept as a shared module, so its top-level code (running
-  the SQP solver and regenerating a plot) executes again whenever
-  `07-sqp-vs-slsqp.py` does `from sqp_solver import *`. This is expected, not
-  a bug — just don't be surprised to see it print/plot twice.
+- `sqp_solver.py` exposes the `SQP()` function used by `07-sqp-vs-slsqp.py`;
+  its own demo (solving the non-convex problem and plotting convergence) is
+  guarded behind `if __name__ == "__main__"`, so it only runs if you execute
+  `python sqp_solver.py` directly, not when it's imported.
 - Randomized steps (e.g. the SQP initial guess, Monte Carlo sampling) use
   fixed seeds (`np.random.seed(1)` / `RandomState(seed=123)`), so numerical
   results should match run to run given the same input data.
