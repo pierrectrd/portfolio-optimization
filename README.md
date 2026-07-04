@@ -1,12 +1,12 @@
 # Portfolio Optimization
 
-This project explores several numerical optimization methods applied to portfolio
-construction, from basic least-squares problems to Markowitz mean-variance
-optimization and higher-moment (kurtosis-aware) portfolio selection. It compares
-solvers (CVXPY, SciPy's SLSQP) and custom implementations (SQP, SCP) in terms of
-correctness, speed, and scalability.
+This project explores numerical optimization methods applied to portfolio
+construction, from least-squares problems to Markowitz mean-variance
+optimization and higher-moment (kurtosis-aware) portfolio selection. It is
+derived from an academic optimization project at **ENSTA Paris**.
 
-It is derived from an academic optimization project carried out at **ENSTA Paris**.
+**For the methodology, results, and discussion, see
+[`Markowitz_portfolio_optimization_report.pdf`](Markowitz_portfolio_optimization_report.pdf).**
 
 ## Contents
 
@@ -69,10 +69,28 @@ python 10-kurtosis-sdp.py
 ```
 
 Running them in order and from that directory keeps the shared-module imports
-working and reproduces the project's results and figures step by step, in the
-same sequence as the report.
+working and reproduces the project's results, printed metrics, and figures
+step by step, in the same sequence as the report. A few things to know before
+running them:
+
+- **Internet access is required.** Every script pulls historical price data
+  live from Yahoo Finance through `yfinance`; results depend on that data
+  still being available and unchanged.
+- **Some scripts open plot windows and wait.** `05`, `08`, and `09` call
+  `plt.show()`, which blocks until you close the figure window. Run them in
+  an environment with a display, or comment out `plt.show()` for a
+  fully non-interactive/headless run.
+- **`sqp_solver.py` runs on import, not just on call.** It's the original
+  standalone script kept as a shared module, so its top-level code (running
+  the SQP solver and regenerating a plot) executes again whenever
+  `07-sqp-vs-slsqp.py` does `from sqp_solver import *`. This is expected, not
+  a bug — just don't be surprised to see it print/plot twice.
+- Randomized steps (e.g. the SQP initial guess, Monte Carlo sampling) use
+  fixed seeds (`np.random.seed(1)` / `RandomState(seed=123)`), so numerical
+  results should match run to run given the same input data.
 
 ## Requirements
 
-Python 3, with `numpy`, `pandas`, `matplotlib`, `scipy`, `cvxpy`, and `yfinance`
-(used to download historical stock price data from Yahoo Finance).
+Python 3, with `numpy`, `pandas`, `matplotlib`, `scipy`, `cvxpy`, `yfinance`
+(historical stock price data), and `riskfolio-lib` (portfolio composition
+pie charts, used by scripts `06` and `09`).
